@@ -13,18 +13,20 @@ public class PaintingClient {
     private ObjectInputStream socketIn;
 
     public PaintingClient(String ip, int port) throws IOException {
+        System.out.println("Trying to connect");
         socket = new Socket(ip, port);
+        System.out.println("Connected");
         socketOut = new ObjectOutputStream(socket.getOutputStream());
         socketIn = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void writePoint(Point point) throws IOException {
-        System.out.println("Client sended: " + point);
-        socketOut.writeObject(point);
+    public void writePoint(PointData pointData) throws IOException {
+        System.out.println("Client sended: " + pointData);
+        socketOut.writeObject(pointData);
     }
 
-    public Point receivePoint() throws IOException, ClassNotFoundException {
-        return (Point) socketIn.readObject();
+    public PointData receivePoint() throws IOException, ClassNotFoundException {
+        return (PointData) socketIn.readObject();
     }
 
 }
