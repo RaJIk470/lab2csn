@@ -11,17 +11,26 @@ import java.util.Objects;
 public class PaintingServer {
     private ServerSocket socket;
     private static List<ObjectOutputStream> outputs;
+    private static List<PointData> points;
 
     public PaintingServer(int port) throws IOException {
+        points = new ArrayList<>();
         socket = new ServerSocket(port);
         outputs = new ArrayList<>();
     }
 
     public synchronized void sendToAll(PointData pointData, ObjectOutputStream output) throws IOException {
         for (var s : outputs) {
+            if (s == null) continue;
             if (!(output.equals(s))) {
                 s.writeObject(pointData);
             }
+        }
+    }
+
+    private void writePointsData(ObjectOutputStream output) throws IOException {
+        for (var data : points) {
+            output.writeObject(data);
         }
     }
     public void listen() throws IOException {
@@ -29,19 +38,24 @@ public class PaintingServer {
             Socket client = socket.accept();
             System.out.println("Accepted client");
             Thread thread = new Thread(() -> {
+                ObjectOutputStream output = null;
                 try {
                     ObjectInputStream input = new ObjectInputStream(client.getInputStream());
-                    ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
+                    output = new ObjectOutputStream(client.getOutputStream());
                     outputs.add(output);
+                    writePointsData(output);
                     while (true) {
-                        PointData pointData = (PointData)input.readObject();
+                        PointData pointData = (PointData) input.readObject();
+                        points.add(pointData);
                         System.out.println("Server received: " + pointData.getPoint());
                         sendToAll(pointData, output);
                     }
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
+                } finally {
+                    outputs.remove(output);
                 }
 
             });
