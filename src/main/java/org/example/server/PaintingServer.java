@@ -1,12 +1,12 @@
-package org.example;
+package org.example.server;
 
-import java.awt.*;
+import org.example.data.PointData;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class PaintingServer {
     private ServerSocket socket;

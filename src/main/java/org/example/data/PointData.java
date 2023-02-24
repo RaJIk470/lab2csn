@@ -1,4 +1,4 @@
-package org.example;
+package org.example.data;
 
 import java.awt.*;
 import java.io.Serializable;

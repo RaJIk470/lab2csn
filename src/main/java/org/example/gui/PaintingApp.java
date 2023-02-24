@@ -1,13 +1,16 @@
-package org.example;
+package org.example.gui;
+
+import org.example.client.PaintingClient;
+import org.example.data.PointData;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.ServerSocket;
 import javax.swing.*;
 
 public class PaintingApp extends JFrame implements MouseListener, MouseMotionListener, Runnable {
     private JPanel canvas;
+    private Canvas c;
     private Point lastPoint;
     private Color currentColor;
     private PaintingClient paintingClient;
@@ -18,11 +21,15 @@ public class PaintingApp extends JFrame implements MouseListener, MouseMotionLis
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        canvas = new JPanel();
-        canvas.setBackground(Color.WHITE);
-        canvas.addMouseListener(this);
-        canvas.addMouseMotionListener(this);
-        add(canvas, BorderLayout.CENTER);
+        //canvas = new JPanel();
+        //canvas.setBackground(Color.WHITE);
+        //canvas.addMouseListener(this);
+        //canvas.addMouseMotionListener(this);
+        //add(canvas, BorderLayout.CENTER);
+        c = new Canvas();
+        c.addMouseListener(this);
+        c.addMouseMotionListener(this);
+        add(c, BorderLayout.CENTER);
 
         currentColor = Color.BLACK;
 
@@ -40,7 +47,7 @@ public class PaintingApp extends JFrame implements MouseListener, MouseMotionLis
     }
 
     public void mouseDragged(MouseEvent e) {
-        Graphics g = canvas.getGraphics();
+        Graphics g = c.getGraphics();
         g.setColor(currentColor);
         g.drawLine(lastPoint.x, lastPoint.y, e.getX(), e.getY());
         try {
@@ -66,7 +73,7 @@ public class PaintingApp extends JFrame implements MouseListener, MouseMotionLis
                 if (pointData.isNewPoint())
                     lastReceivedPoint = point;
                 System.out.println("received: " + point);
-                Graphics g = canvas.getGraphics();
+                Graphics g = c.getGraphics();
                 g.setColor(currentColor);
                 g.drawLine(lastReceivedPoint.x, lastReceivedPoint.y, point.x, point.y);
                 lastReceivedPoint = point;

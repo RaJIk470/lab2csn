@@ -1,9 +1,9 @@
-package org.example;
+package org.example.client;
 
-import java.awt.*;
+import org.example.data.PointData;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -13,15 +13,12 @@ public class PaintingClient {
     private ObjectInputStream socketIn;
 
     public PaintingClient(String ip, int port) throws IOException {
-        System.out.println("Trying to connect");
         socket = new Socket(ip, port);
-        System.out.println("Connected");
         socketOut = new ObjectOutputStream(socket.getOutputStream());
         socketIn = new ObjectInputStream(socket.getInputStream());
     }
 
     public void writePoint(PointData pointData) throws IOException {
-        System.out.println("Client sended: " + pointData);
         socketOut.writeObject(pointData);
     }
 
